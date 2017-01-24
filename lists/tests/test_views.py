@@ -11,7 +11,7 @@ class HomePageTest(TestCase):
 
 class ListViewTest(TestCase):
 
-    def test_uses_list_templage(self):
+    def test_uses_list_template(self):
         list_ = List.objects.create()
         response = self.client.get('/lists/{}/'.format(list_.id,))
         self.assertTemplateUsed(response, 'list.html')
@@ -31,40 +31,11 @@ class ListViewTest(TestCase):
         self.assertNotContains(response, 'other list item 1')
         self.assertNotContains(response, 'other list item 2')
 
-    def test_passes_correct_list_to_templage(self):
+    def test_passes_correct_list_to_template(self):
         other_list = List.objects.create()
         correct_list = List.objects.create()
         response = self.client.get('/lists/{}/'.format(correct_list.id))
         self.assertEqual(response.context['list'], correct_list)
-
-
-class ListAndItemModelsTest(TestCase):
-
-    def test_saving_and_retrieving_items(self):
-        list_ = List()
-        list_.save()
-        first_item = Item()
-        first_item.text = 'The first (ever) list item'
-        first_item.list = list_
-        first_item.save()
-
-        second_item = Item()
-        second_item.text = 'Item the second'
-        second_item.list = list_
-        second_item.save()
-
-        saved_list = List.objects.first()
-        self.assertEqual(saved_list, list_)
-
-        saved_items = Item.objects.all()
-        self.assertEqual(saved_items.count(), 2)
-
-        first_saved_item = saved_items[0]
-        second_saved_item = saved_items[1]
-        self.assertEqual(first_saved_item.text, 'The first (ever) list item')
-        self.assertEqual(first_saved_item.list, list_)
-        self.assertEqual(second_saved_item.text, 'Item the second')
-        self.assertEqual(second_saved_item.list, list_)
 
 
 class NewListTest(TestCase):
